@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,12 @@ import org.hamcrest.Matcher
 import org.testattoo.core.By
 import org.testattoo.core.ComponentException
 import org.testattoo.core.MetaDataProvider
+import org.testattoo.core.Provider
 import org.testattoo.core.input.DragBuilder
 import org.testattoo.core.support.Clickable
 import org.testattoo.core.support.Draggable
 
-import static org.testattoo.core.Testattoo.config
+import static java.util.Collections.unmodifiableCollection
 import static org.testattoo.core.input.MouseModifiers.*
 
 /**
@@ -32,12 +33,14 @@ import static org.testattoo.core.input.MouseModifiers.*
 class Component implements Clickable, Draggable {
     private final Queue<Matcher> BLOCKS = new LinkedList<>()
 
+    Provider provider
     MetaDataProvider meta
 
     protected Component() {}
 
-    Component(MetaDataProvider meta) {
-        this()
+    Component(Provider provider, MetaDataProvider meta) {
+        super()
+        this.provider = provider
         this.meta = meta
     }
 
@@ -46,7 +49,7 @@ class Component implements Clickable, Draggable {
     }
 
     boolean enabled() {
-        !config.evaluator.check(id(), "it.is(':disabled') || !!it.attr('disabled')")
+        !provider.enabled(this)
     }
 
     boolean available() {
@@ -59,11 +62,11 @@ class Component implements Clickable, Draggable {
     }
 
     boolean visible() {
-        !config.evaluator.check(id(), "it.is(':hidden')")
+        provider.visible(this)
     }
 
     protected <T extends Component> List<T> find(By by, Class<T> type = Component) {
-        config.evaluator.metaInfo(by.getExpression(this)).collect { it.asType(type) } as List<T>
+        provider.metaInfo(by.getExpression(this)).collect { it.asType(type) } as List<T>
     }
 
     void clearBlocks() {
@@ -75,22 +78,22 @@ class Component implements Clickable, Draggable {
     }
 
     Collection<Matcher> getBlocks() {
-        Collections.unmodifiableCollection(BLOCKS)
+        unmodifiableCollection(BLOCKS)
     }
 
     @Override
     void click() {
-        config.evaluator.click(id(), [LEFT, SINGLE], [])
+        provider.click(id(), [LEFT, SINGLE], [])
     }
 
     @Override
     void rightClick() {
-        config.evaluator.click(id(), [RIGHT, SINGLE], [])
+        provider.click(id(), [RIGHT, SINGLE], [])
     }
 
     @Override
     void doubleClick() {
-        config.evaluator.click(id(), [LEFT, DOUBLE], [])
+        provider.click(id(), [LEFT, DOUBLE], [])
     }
 
     @Override
@@ -115,6 +118,7 @@ class Component implements Clickable, Draggable {
     Object asType(Class clazz) {
         if (Component.isAssignableFrom(clazz)) {
             Component c = (Component) clazz.newInstance()
+            c.provider = provider
             c.meta = this.meta
             return c
         }

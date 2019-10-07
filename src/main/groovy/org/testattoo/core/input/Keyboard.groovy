@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  */
 package org.testattoo.core.input
 
-import static org.testattoo.core.Testattoo.config
+import org.testattoo.core.Config
 
 /**
  * @author David Avenante (d.avenante@gmail.com)
  */
 class Keyboard {
-    void type(Collection<?> keys) { config.evaluator.type(keys) }
+    void type(Collection<?> keys) { Config.provider.type(keys) }
 }

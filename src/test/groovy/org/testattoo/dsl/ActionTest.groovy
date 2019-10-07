@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,7 @@ package org.testattoo.dsl
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.testattoo.core.ComponentException
-import org.testattoo.core.Evaluator
-import org.testattoo.core.MetaDataProvider
-import org.testattoo.core.MetaInfo
+import org.testattoo.core.*
 import org.testattoo.core.component.*
 import org.testattoo.core.component.field.RangeField
 import org.testattoo.core.component.field.TextField
@@ -39,6 +36,7 @@ import static org.testattoo.core.input.MouseModifiers.SINGLE
  */
 @DisplayName("Actions")
 class ActionTest {
+    private static Provider provider
     private static MetaDataProvider meta
     private static MetaInfo metaInfo = new MetaInfo(id: 'id', node: 'node')
 
@@ -46,33 +44,31 @@ class ActionTest {
     static void before() {
         meta = mock(MetaDataProvider)
         when(meta.metaInfo(any(Component))).thenReturn(metaInfo)
-        config.evaluator = mock(Evaluator)
+        provider = mock(Provider)
+        Config.provider = provider // For the browser Object
     }
 
     @Test
     @DisplayName("Should visit an URL")
     void should_visit() {
-        config.evaluator = mock(Evaluator)
-
-        verify(config.evaluator, times(0)).open('http://myUrl')
+        verify(provider, times(0)).open('http://myUrl')
         visit('http://myUrl')
-        verify(config.evaluator, times(1)).open('http://myUrl')
+        verify(provider, times(1)).open('http://myUrl')
     }
 
     @Test
     @DisplayName("Should type text")
     void should_type_text() {
-        config.evaluator = mock(Evaluator)
-
-        verify(config.evaluator, times(0)).type(['data'])
+        verify(provider, times(0)).type(['data'])
         type('data')
-        verify(config.evaluator, times(1)).type(['data'])
+        verify(provider, times(1)).type(['data'])
     }
 
     @Test
     @DisplayName("Should fill a field")
     void should_fill_field() {
         TextField field = spy(TextField)
+        field.provider = provider
         field.meta = meta
 
         fill field with 'Some value'
@@ -83,6 +79,7 @@ class ActionTest {
     @DisplayName("Should set a value")
     void should_set_a_value() {
         RangeField range = spy(RangeField)
+        range.provider = provider
         range.meta = meta
 
         set range to 10
@@ -100,9 +97,10 @@ class ActionTest {
     @DisplayName("Should submit and reset a form")
     void should_submit_and_reset_form() {
         Form form = spy(Form.class)
+        form.provider = provider
         form.meta = meta
 
-        reset form // Explicit call to forbid Mockito reset method call
+        Testattoo.reset form // Explicit call to forbid Mockito reset method call
         verify(form, times(1)).reset()
 
         submit form
@@ -113,25 +111,26 @@ class ActionTest {
     @DisplayName("Should select items in components that containing items")
     void should_select_items_in_components_containing_items() {
         ListBox listBox = spy(ListBox)
+        listBox.provider = provider
         listBox.meta = meta
 
         Item item_1 = spy(Item)
+        item_1.provider = provider
         item_1.meta = meta
 
         Item item_2 = spy(Item)
+        item_2.provider = provider
         item_2.meta = meta
-
-        config.evaluator = mock(Evaluator)
 
         doReturn([item_1, item_2]).when(listBox).items()
         doReturn('1').when(item_1).id()
         doReturn('2').when(item_2).id()
 
         listBox.select(item_1)
-        verify(config.evaluator, times(1)).click('1', [LEFT, SINGLE], [CTRL])
-        verify(config.evaluator, times(0)).click('2', [LEFT, SINGLE], [CTRL])
+        verify(provider, times(1)).click('1', [LEFT, SINGLE], [CTRL])
+        verify(provider, times(0)).click('2', [LEFT, SINGLE], [CTRL])
 
-        reset(config.evaluator)
+        reset(provider)
         reset(item_1)
         reset(item_2)
         doReturn('1').when(item_1).id()
@@ -139,10 +138,10 @@ class ActionTest {
         doReturn(true).when(item_1).selected()
 
         listBox.unselect(item_1)
-        verify(config.evaluator, times(1)).click('1', [LEFT, SINGLE], [CTRL])
-        verify(config.evaluator, times(0)).click('2', [LEFT, SINGLE], [CTRL])
+        verify(provider, times(1)).click('1', [LEFT, SINGLE], [CTRL])
+        verify(provider, times(0)).click('2', [LEFT, SINGLE], [CTRL])
 
-        reset(config.evaluator)
+        reset(provider)
         reset(item_1)
         reset(item_2)
         doReturn('1').when(item_1).id()
@@ -151,10 +150,10 @@ class ActionTest {
         doReturn('Item_2').when(item_2).value()
 
         listBox.select('Item_2')
-        verify(config.evaluator, times(0)).click('1', [LEFT, SINGLE], [CTRL])
-        verify(config.evaluator, times(1)).click('2', [LEFT, SINGLE], [CTRL])
+        verify(provider, times(0)).click('1', [LEFT, SINGLE], [CTRL])
+        verify(provider, times(1)).click('2', [LEFT, SINGLE], [CTRL])
 
-        reset(config.evaluator)
+        reset(provider)
         reset(item_1)
         reset(item_2)
         doReturn('1').when(item_1).id()
@@ -165,14 +164,15 @@ class ActionTest {
         doReturn(true).when(item_2).selected()
 
         listBox.unselect('Item_1', 'Item_2')
-        verify(config.evaluator, times(1)).click('1', [LEFT, SINGLE], [CTRL])
-        verify(config.evaluator, times(1)).click('2', [LEFT, SINGLE], [CTRL])
+        verify(provider, times(1)).click('1', [LEFT, SINGLE], [CTRL])
+        verify(provider, times(1)).click('2', [LEFT, SINGLE], [CTRL])
     }
 
     @Test
     @DisplayName("Should throw an error when action on component does not correspond to its state")
     void should_throw_an_error_when_action_on_component_does_not_correspond_to_its_state() {
         CheckBox checkbox = spy(CheckBox)
+        checkbox.provider = provider
         checkbox.meta = meta
 
         doReturn(false).when(checkbox).enabled()
@@ -210,9 +210,11 @@ class ActionTest {
         }
 
         ListBox listBox = spy(ListBox)
+        listBox.provider = provider
         listBox.meta = meta
 
         Item item_1 = spy(Item)
+        item_1.provider = provider
         item_1.meta = meta
 
         doReturn([item_1]).when(listBox).items()

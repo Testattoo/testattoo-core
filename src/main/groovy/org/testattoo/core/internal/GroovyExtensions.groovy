@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package org.testattoo.core.internal
 
 import org.hamcrest.Matcher
 import org.testattoo.core.ComponentException
+import org.testattoo.core.Config
 import org.testattoo.core.component.Component
 import org.testattoo.core.component.Item
 import org.testattoo.core.hamcrest.Matchers
@@ -30,7 +31,6 @@ import org.testattoo.core.support.UnSelectable
 
 import java.time.Duration
 
-import static org.testattoo.core.Testattoo.getConfig
 import static org.testattoo.core.Testattoo.waitUntil
 import static org.testattoo.core.input.Key.*
 import static org.testattoo.core.input.MouseModifiers.SINGLE
@@ -48,7 +48,7 @@ class GroovyExtensions {
     static void click(Key key, Component c) { click([key], c) }
 
     static void click(Collection<Key> keys, Component c) {
-        config.evaluator.click(c.id(), [LEFT, SINGLE], keys)
+        Config.provider.click(c.id(), [LEFT, SINGLE], keys)
     }
 
     // Not testable in current browsers cause handled by browsers
@@ -56,7 +56,7 @@ class GroovyExtensions {
     static void rightClick(Key key, Component c) { rightClick([key], c) }
 
     static void rightClick(Collection<Key> keys, Component c) {
-        config.evaluator.click(c.id(), [RIGHT, SINGLE], keys)
+        Config.provider.click(c.id(), [RIGHT, SINGLE], keys)
     }
 
     // ====================================================================
@@ -139,7 +139,7 @@ class GroovyExtensions {
     }
 
     static void contain(Component component, Component... components) {
-        component.addBlock(new ContainMatcher(config.evaluator, components))
+        component.addBlock(new ContainMatcher(components))
     }
 
     static void have(Component component, PropertyMatcher matcher) {

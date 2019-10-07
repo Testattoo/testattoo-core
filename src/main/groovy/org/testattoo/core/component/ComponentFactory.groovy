@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,6 @@ package org.testattoo.core.component
 import org.testattoo.core.ComponentException
 import org.testattoo.core.component.field.*
 import org.testattoo.core.internal.Identifiers
-
-import static org.testattoo.core.Testattoo.$$
 
 /**
  * @author David Avenante (d.avenante@gmail.com)
@@ -77,7 +75,7 @@ class ComponentFactory {
         T field = collectAll(clazz).find { it.label() == value || it.placeholder() == value }
         if (field)
             return field
-        throw new ComponentException("Unable to find " + clazz + " with label or placeholder equals to '" + value + "'")
+        throw new ComponentException("Unable to find $clazz with label or placeholder equals to '$value'")
     }
 
     private static <T extends Component> List<T> collectAll(Class<T> clazz) {

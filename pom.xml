@@ -1,6 +1,6 @@
 <!--
 
-    Copyright © 2018 Ovea (d.avenante@gmail.com)
+    Copyright © 2019 Testattoo (altus34@gmail.com)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -23,25 +23,22 @@
 
   <parent>
     <groupId>org.testattoo</groupId>
-    <artifactId>testattoo-parent-pom</artifactId>
+    <artifactId>testattoo-pom</artifactId>
     <version>0.1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>org.testattoo-core</artifactId>
-  <version>0.1.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
+  <artifactId>testattoo-core</artifactId>
 
-  <name>Testatoo::core</name>
-  <url>http://www.testatoo.org</url>
+  <name>Testattoo::core</name>
 
   <properties>
     <classgraph.version>4.6.10</classgraph.version>
   </properties>
 
   <scm>
-    <connection>scm:git:git@github.com:Testattoo/org.testattoo-core.git</connection>
-    <developerConnection>scm:git:git@github.com:Testattoo/org.testattoo-core.git</developerConnection>
-    <url>http://github.com/Testattoo/org.testattoo-core</url>
+    <connection>scm:git:git@github.com:Testattoo/testattoo-core.git</connection>
+    <developerConnection>scm:git:git@github.com:Testattoo/testattoo-core.git</developerConnection>
+    <url>http://github.com/Testattoo/testattoo-core</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -62,23 +59,15 @@
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest</artifactId>
     </dependency>
-    <!--To REMOVE -->
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>27.1-jre</version>
-    </dependency>
-    <!--To REMOVE -->
     <dependency>
       <groupId>io.github.classgraph</groupId>
       <artifactId>classgraph</artifactId>
-      <version>${classgraph.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <scope>test</scope>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
@@ -86,14 +75,7 @@
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!--To REMOVE -->
-    <dependency>
-      <groupId>io.projectreactor.netty</groupId>
-      <artifactId>reactor-netty</artifactId>
-      <version>0.8.5.RELEASE</version>
+      <artifactId>mockito-junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

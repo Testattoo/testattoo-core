@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.testattoo.dsl
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.testattoo.core.Evaluator
+import org.testattoo.core.Provider
 import org.testattoo.core.MetaDataProvider
 import org.testattoo.core.MetaInfo
 import org.testattoo.core.component.*
@@ -38,6 +38,7 @@ import static org.testattoo.core.Testattoo.*
  */
 @DisplayName("Property")
 class PropertyTest {
+    private static Provider provider
     private static MetaDataProvider meta
     private static MetaInfo metaInfo = new MetaInfo(id: 'id', node: 'node')
 
@@ -45,13 +46,14 @@ class PropertyTest {
     static void before() {
         meta = mock(MetaDataProvider)
         when(meta.metaInfo(any(Component))).thenReturn(metaInfo)
-        config.evaluator = mock(Evaluator)
+        provider = mock(Provider)
     }
 
     @Test
     @DisplayName("Should support label and placeholder")
     void should_support_label_and_placeholder() {
         TextField field = spy(TextField)
+        field.provider = provider
         field.meta = meta
 
         doReturn('Label').when(field).label()
@@ -65,6 +67,7 @@ class PropertyTest {
     @DisplayName("Should support: maximum, minimum and step")
     void should_support_maximum_minimum_and_step() {
         RangeField field = spy(RangeField)
+        field.provider = provider
         field.meta = meta
 
         doReturn(5).when(field).minimum()
@@ -82,6 +85,7 @@ class PropertyTest {
     @DisplayName("Should support value")
     void should_support_value() {
         TextField field = spy(TextField)
+        field.provider = provider
         field.meta = meta
 
         doReturn('Value').when(field).value()
@@ -92,6 +96,7 @@ class PropertyTest {
     @DisplayName("Should support text")
     void should_support_text() {
         Button button = spy(Button)
+        button.provider = provider
         button.meta = meta
 
         doReturn('Text').when(button).text()
@@ -102,6 +107,7 @@ class PropertyTest {
     @DisplayName("Should support length")
     void should_support_length() {
         TextField other_field = spy(TextField)
+        other_field.provider = provider
         other_field.meta = meta
 
         doReturn(25).when(other_field).length()
@@ -112,6 +118,7 @@ class PropertyTest {
     @DisplayName("Should support reference")
     void should_support_reference() {
         Link link = spy(Link)
+        link.provider = provider
         link.meta = meta
 
         doReturn('http://reference').when(link).reference()
@@ -122,6 +129,7 @@ class PropertyTest {
     @DisplayName("Should support datagrid properties")
     void should_support_datagrid() {
         DataGrid datagrid = spy(DataGrid)
+        datagrid.provider = provider
         datagrid.meta = meta
 
         Column column_1 = spy(Column)
@@ -167,6 +175,7 @@ class PropertyTest {
     @DisplayName("Should support dropdown properties")
     void should_support_dropdown() {
         Dropdown dropdown = spy(Dropdown)
+        dropdown.provider = provider
         dropdown.meta = meta
 
         Group group_1 = spy(Group)
@@ -205,6 +214,7 @@ class PropertyTest {
     @DisplayName("Should support ListBox properties")
     void should_support_listbox() {
         ListBox listBox = spy(ListBox)
+        listBox.provider = provider
         listBox.meta = meta
 
         Item item_1 = spy(Item)

@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,8 @@ package org.testattoo.core.component
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.testattoo.core.Evaluator
+import org.testattoo.core.Config
+import org.testattoo.core.Provider
 import org.testattoo.core.MetaDataProvider
 import org.testattoo.core.MetaInfo
 import org.testattoo.core.input.DragBuilder
@@ -27,7 +28,6 @@ import org.testattoo.core.support.Draggable
 
 import static org.mockito.ArgumentMatchers.any
 import static org.mockito.Mockito.*
-import static org.testattoo.core.Testattoo.getConfig
 import static org.testattoo.core.input.MouseModifiers.*
 
 /**
@@ -36,14 +36,13 @@ import static org.testattoo.core.input.MouseModifiers.*
 @DisplayName("Component")
 class ComponentTest {
     MetaDataProvider metaData
-    Evaluator evaluator
+    Provider provider
 
     @BeforeEach
     void before() {
         metaData = mock(MetaDataProvider)
         when(metaData.metaInfo(any(Component))).thenReturn(new MetaInfo(id: 'id', node: 'node'))
-        evaluator = mock(Evaluator)
-        config.evaluator = evaluator
+        provider = mock(Provider)
     }
 
     @Test
@@ -55,16 +54,16 @@ class ComponentTest {
 
     @Test
     void should_be_initialized_with_a_meta_data_provider() {
-        Component cmp = new Component(metaData)
+        Component cmp = new Component(provider, metaData)
         assert cmp.meta == metaData
     }
 
     @Test
     void should_have_identity_on_id() {
-        Component cmp_1 = new Component(metaData)
-        Component cmp_2 = new Component(metaData)
-        Component cmp_3 = new Component(metaData)
-        Component cmp_4 = new Component(metaData) {}
+        Component cmp_1 = new Component(provider, metaData)
+        Component cmp_2 = new Component(provider, metaData)
+        Component cmp_3 = new Component(provider, metaData)
+        Component cmp_4 = new Component(provider, metaData) {}
 
         when(metaData.metaInfo(any(Component)))
             .thenReturn(new MetaInfo(id: 'cmpId_1')) // Call on id for cmp_1
@@ -83,32 +82,30 @@ class ComponentTest {
 
     @Test
     void should_implement_toString_based_on_class_name_and_id() {
-        Component cmp_1 = new Component(metaData)
+        Component cmp_1 = new Component(provider, metaData)
         when(metaData.metaInfo(any(Component))).thenReturn(new MetaInfo(id: 'cmpId_1'))
 
         assert cmp_1.toString() == 'Component:cmpId_1'
     }
 
     @Test
-    void should_have_generic_behaviours_delegated_to_evaluator() {
+    void should_have_generic_behaviours_delegated_to_provider() {
         String cmp_id = 'cmpId_1'
-        Component component = new Component(metaData)
+        Component component = new Component(provider, metaData)
         when(metaData.metaInfo(any(Component))).thenReturn(new MetaInfo(id: cmp_id))
 
-        String default_enabled_check_expression = "it.is(':disabled') || !!it.attr('disabled')"
-        verify(evaluator, times(0)).check(cmp_id, default_enabled_check_expression)
+        verify(provider, times(0)).enabled(component)
 
         component.enabled()
-        verify(evaluator, times(1)).check(cmp_id, default_enabled_check_expression)
+        verify(provider, times(1)).enabled(component)
 
         component.enabled()
-        verify(evaluator, times(2)).check(cmp_id, default_enabled_check_expression)
+        verify(provider, times(2)).enabled(component)
 
-        String default_visibility_check_expression = "it.is(':hidden')"
-        verify(evaluator, times(0)).check(cmp_id, default_visibility_check_expression)
+        verify(provider, times(0)).visible(component)
 
         component.visible()
-        verify(evaluator, times(1)).check(cmp_id, default_visibility_check_expression)
+        verify(provider, times(1)).visible(component)
 
         reset(metaData)
         when(metaData.metaInfo(any(Component))).thenReturn(new MetaInfo(id: cmp_id))
@@ -117,17 +114,17 @@ class ComponentTest {
         component.available()
         verify(metaData, times(1)).metaInfo(component)
 
-        verify(evaluator, times(0)).click(cmp_id, [LEFT, SINGLE], [])
+        verify(provider, times(0)).click(cmp_id, [LEFT, SINGLE], [])
         component.click()
-        verify(evaluator, times(1)).click(cmp_id, [LEFT, SINGLE], [])
+        verify(provider, times(1)).click(cmp_id, [LEFT, SINGLE], [])
 
-        verify(evaluator, times(0)).click(cmp_id, [RIGHT, SINGLE], [])
+        verify(provider, times(0)).click(cmp_id, [RIGHT, SINGLE], [])
         component.rightClick()
-        verify(evaluator, times(1)).click(cmp_id, [RIGHT, SINGLE], [])
+        verify(provider, times(1)).click(cmp_id, [RIGHT, SINGLE], [])
 
-        verify(evaluator, times(0)).click(cmp_id, [LEFT, DOUBLE], [])
+        verify(provider, times(0)).click(cmp_id, [LEFT, DOUBLE], [])
         component.doubleClick()
-        verify(evaluator, times(1)).click(cmp_id, [LEFT, DOUBLE], [])
+        verify(provider, times(1)).click(cmp_id, [LEFT, DOUBLE], [])
 
         DragBuilder dragBuilder = component.drag()
         assert dragBuilder.dragged == component

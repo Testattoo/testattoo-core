@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,13 @@
  */
 package org.testattoo.core
 
+import org.testattoo.core.component.Component
 import org.testattoo.core.input.MouseModifiers
 
 /**
  * @author David Avenante (d.avenante@gmail.com)
  */
-interface Evaluator extends AutoCloseable {
+interface Provider extends AutoCloseable {
     abstract Object getDriver()
 
     abstract void open(String url)
@@ -29,9 +30,13 @@ interface Evaluator extends AutoCloseable {
 
     abstract void registerScripts(String... scripts)
 
-    abstract String eval(String id, String jsExpr)
+    abstract String eval(String id, String expr)
 
-    abstract boolean check(String id, String jsExpr)
+    abstract boolean check(String id, String expr)
+
+    abstract boolean enabled(Component c)
+
+    abstract boolean visible(Component c)
 
     abstract String getTitle()
 

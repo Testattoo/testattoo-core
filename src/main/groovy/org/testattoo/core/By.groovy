@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,15 +28,6 @@ class By {
     protected By(String expression, SimpleTemplateEngine templateEngine) {
         this.expression = expression
         this.templateEngine = templateEngine
-    }
-
-    static By css(String expression) {
-        String id = '${id}'
-        new By("\\\$('[id=\"${id}\"]').find('${expression}')", new SimpleTemplateEngine())
-    }
-
-    static By js(String expression) {
-        new By(expression, null)
     }
 
     String getExpression(Component component) {

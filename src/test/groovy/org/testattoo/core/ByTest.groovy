@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import org.testattoo.core.component.Component
 import static org.mockito.ArgumentMatchers.any
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.when
-import static org.testattoo.core.Testattoo.config
 
 @DisplayName("By selector")
 class ByTest {
@@ -31,7 +30,7 @@ class ByTest {
 
     @BeforeAll
     static void before() {
-        config.evaluator = mock(Evaluator)
+        Config.provider = mock(Provider)
         meta = mock(MetaDataProvider)
         when(meta.metaInfo(any(Component))).thenReturn(new MetaInfo(id: 'id', node: 'node'))
     }
@@ -56,7 +55,7 @@ class ByTest {
     void should_find_sub_components() {
         Component cmp = new Component()
         cmp.meta = meta
-        when(config.evaluator.metaInfo("\$('[id=\"id\"]').find('sub_expression')")).thenReturn([
+        when(Config.provider.metaInfo("\$('[id=\"id\"]').find('sub_expression')")).thenReturn([
             new MetaInfo(id: '1', node: 'node'),
             new MetaInfo(id: '2', node: 'node')
         ])

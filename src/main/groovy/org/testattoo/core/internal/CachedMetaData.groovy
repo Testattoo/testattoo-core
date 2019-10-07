@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import org.testattoo.core.MetaDataProvider
 import org.testattoo.core.MetaInfo
 import org.testattoo.core.component.Component
 
-import static org.testattoo.core.Testattoo.getConfig
 import static org.testattoo.core.internal.Identifiers.identifyingExpression
 
 /**
@@ -29,7 +28,6 @@ import static org.testattoo.core.internal.Identifiers.identifyingExpression
  */
 class CachedMetaData implements MetaDataProvider {
     private MetaInfo metaInfo
-
     private IdProvider idProvider
 
     @Override
@@ -38,9 +36,9 @@ class CachedMetaData implements MetaDataProvider {
             MetaInfo info = idProvider.metaInfos()[0]
             if (c.class != Component) {
                 String identifyingExpr = identifyingExpression(c.class)
-                if (!(config.evaluator.check(info.id, identifyingExpr))) {
-                    Class<Component> type = config.componentTypes.find {
-                        config.evaluator.check(info.id, identifyingExpression(it))
+                if (!(c.provider.check(info.id, identifyingExpr))) {
+                    Class<Component> type = metaInfo.componentTypes.find {
+                        c.provider.check(info.id, identifyingExpression(it))
                     }
                     throw new ComponentException("Expected a ${c.class.simpleName} for component with id '${info.id}', but was: ${type?.simpleName ?: 'unknown'}")
                 }

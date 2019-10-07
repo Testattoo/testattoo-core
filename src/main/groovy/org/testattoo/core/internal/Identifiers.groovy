@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ class Identifiers {
     private static Map<Class, List<Class>> cachedComponents = new HashMap<>()
 
     private static ScanResult scan = new ClassGraph()
-        .whitelistPackages('org.org.testattoo.bundle')
+        .whitelistPackages('org.testattoo.bundle')
         .scan()
 
     static Map factories = [

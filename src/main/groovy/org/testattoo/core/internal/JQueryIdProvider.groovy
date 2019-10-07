@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,25 +16,37 @@
 package org.testattoo.core.internal
 
 import org.testattoo.core.ComponentException
+import org.testattoo.core.Config
 import org.testattoo.core.IdProvider
 import org.testattoo.core.MetaInfo
+
+import java.util.logging.Level
+import java.util.logging.Logger
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-class jQueryIdProvider implements IdProvider {
+class JQueryIdProvider implements IdProvider {
+    private static Logger logger = Logger.getLogger("org.testattoo.core")
+
     final String expression
     final boolean singleElement
 
-    jQueryIdProvider(String expression, boolean singleElement) {
+    IdProvider get(String expression, boolean singleElement) {
+        return new JQueryIdProvider(expression, singleElement)
+    }
+
+    JQueryIdProvider() {}
+
+    private JQueryIdProvider(String expression, boolean singleElement) {
         this.expression = expression.startsWith('$') ? expression : ('$(\'' + expression + '\')')
         this.singleElement = singleElement
     }
 
     @Override
     List<MetaInfo> metaInfos() throws ComponentException {
-        Log.log "metaInfos: ${expression}"
-        List<MetaInfo> metaInfos = config.evaluator.metaInfo(expression)
+        logger.log(Level.INFO, "metaInfos: ${expression}")
+        List<MetaInfo> metaInfos = Config.provider.metaInfo(expression)
         if (singleElement) {
             if (metaInfos.size() == 1) return metaInfos
             if (metaInfos.size() == 0) throw new ComponentException("Component defined by expression ${expression} not found.")

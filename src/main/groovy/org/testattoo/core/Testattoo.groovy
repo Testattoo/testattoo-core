@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,6 @@ import org.testattoo.core.input.Keyboard
 import org.testattoo.core.input.Mouse
 import org.testattoo.core.internal.CachedMetaData
 import org.testattoo.core.internal.Wait
-import org.testattoo.core.internal.jQueryIdProvider
 import org.testattoo.core.support.*
 import org.testattoo.core.support.property.InputSupport
 
@@ -37,34 +36,23 @@ import org.testattoo.core.support.property.InputSupport
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 class Testattoo {
-    /**
-     * Access testatto config
-     */
-    // TODO david
-    static Config config = new Config()
+    protected static mouse = new Mouse()
+    protected static keyboard = new Keyboard()
+    protected static wait = new Wait()
 
     /**
      * Create a component
      */
     static Component $(String expression) {
-        new Component(new CachedMetaData(idProvider: new jQueryIdProvider(expression, true)))
+        new Component(Config.provider, new CachedMetaData(idProvider: Config.idProvider.get(expression, true)))
     }
 
     /**
      * Creates a list of component
      */
     static List $$(String expression, Class clazz = Component) {
-        Components components = new Components(clazz, new CachedMetaData(idProvider: new jQueryIdProvider(expression, false)))
-        components.list()
+        new Components(clazz, Config.provider, new CachedMetaData(idProvider: Config.idProvider.get(expression, false))).list()
     }
-
-    static {
-        config.scan 'org.org.testattoo.bundle'
-    }
-
-    protected static mouse = new Mouse()
-    protected static keyboard = new Keyboard()
-    protected static wait = new Wait()
 
     /**
      * States
@@ -146,7 +134,7 @@ class Testattoo {
     /**
      * Actions
      */
-    static void visit(String uri) { Browser.open(uri) }
+    static void visit(String uri) { browser().open(uri) }
 
     static void check(Checkable c) {
         if (!c.enabled())
@@ -177,19 +165,21 @@ class Testattoo {
     static final FillAction set(InputSupport c) { new FillAction(c) }
 
     static class Components<T extends Component> {
+        private final Provider provider
         private final MetaDataProvider meta
         private final Class<T> type
         private List<T> components
 
-        Components(Class<T> type, MetaDataProvider meta) {
+        Components(Class<T> type, Provider provider, MetaDataProvider meta) {
             this.meta = meta
             this.type = type
+            this.provider = provider
         }
 
         List<T> list() {
             if (components == null) {
                 components = meta.metaInfos().collect {
-                    new Component(new CachedMetaData(idProvider: new jQueryIdProvider("#${it.id}", false))).asType(type)
+                    new Component(provider, new CachedMetaData(idProvider: Config.idProvider.get("#${it.id}", false))).asType(type)
                 } as List<T>
             }
             return Collections.unmodifiableList(components)
@@ -215,6 +205,8 @@ class Testattoo {
     static void type(String text) { type([text]) }
 
     // Generic Component Factory
+    static Browser browser() { new Browser(Config.provider) }
+
     static Button button(String text) { ComponentFactory.button(text) }
 
     static Radio radio(String label) { ComponentFactory.radio(label) }

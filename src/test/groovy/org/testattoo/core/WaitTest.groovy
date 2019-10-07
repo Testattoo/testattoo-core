@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,13 @@ import org.junit.jupiter.api.DisplayName
 //import org.hamcrest.StringDescription
 //import org.junit.jupiter.api.AfterAll
 //import org.junit.jupiter.api.BeforeAll
-
+//
 //import org.junit.jupiter.api.Test
 //import org.openqa.selenium.WebDriver
 //import org.openqa.selenium.chrome.ChromeDriver
 //import org.testattoo.Server
 //import org.testattoo.bundle.html5.Button
-//import org.testattoo.evaluator.webdriver.WebDriverEvaluator
+//import org.testattoo.provider.webdriver.WebDriverEvaluator
 //import reactor.netty.DisposableServer
 
 /**
@@ -46,7 +46,7 @@ class WaitTest {
 //
 //        io.github.bonigarcia.wdm.WebDriverManager.chromedriver().setup()
 //        driver = new ChromeDriver()
-//        config.evaluator = new WebDriverEvaluator(driver)
+//        config.provider = new WebDriverEvaluator(driver)
 //
 //        config.waitUntil = 10.seconds
 //        visit BASE_URL + 'wait.html'

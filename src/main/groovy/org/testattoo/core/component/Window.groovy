@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.testattoo.core
+package org.testattoo.core.component
+
+import org.testattoo.core.Provider
 
 /**
  * @author David Avenante (d.avenante@gmail.com)
  */
 class Window {
+    private final Provider provider
     final String id
 
-    Window(String id) { this.id = id }
+    Window(Provider provider, String id) {
+        this.provider = provider
+        this.id = id
+    }
 
-    void close() { Testattoo.config.evaluator.closeWindow(this.id) }
+    void close() { provider.closeWindow(this.id) }
 
     @Override
     String toString() { this.id }

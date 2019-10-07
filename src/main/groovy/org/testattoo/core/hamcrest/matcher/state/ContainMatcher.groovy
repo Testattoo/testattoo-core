@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 package org.testattoo.core.hamcrest.matcher.state
 
 import org.hamcrest.Description
-import org.testattoo.core.Evaluator
+import org.testattoo.core.Config
 import org.testattoo.core.component.Component
 import org.testattoo.core.hamcrest.StateMatcher
 
@@ -26,18 +26,16 @@ import org.testattoo.core.hamcrest.StateMatcher
 class ContainMatcher extends StateMatcher<Component> {
     private List<Component> components = new ArrayList<>()
     private Component container
-    private Evaluator evaluator
     private List ret
 
-    ContainMatcher(Evaluator evaluator, Component... components) {
-        this.evaluator = evaluator
+    ContainMatcher(Component... components) {
         this.components.addAll(components)
     }
 
     @Override
     protected boolean matchesSafely(Component container, Description mismatchDescription) {
         this.container = container
-        ret = evaluator.getJson("\$().org.testattoo({method: 'contains', id:'${container.id()}', ids: [${components.collect { "'${it.id()}'" }.join(', ')}]});")
+        ret = container.provider.getJson("\$().org.testattoo({method: 'contains', id:'${container.id()}', ids: [${components.collect { "'${it.id()}'" }.join(', ')}]});")
         mismatchDescription.appendText("does not contains expected component(s): ${components.findAll { it.id() in ret }}")
         ret.empty
     }

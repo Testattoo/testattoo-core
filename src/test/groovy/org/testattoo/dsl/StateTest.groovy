@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,8 @@ package org.testattoo.dsl
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.testattoo.core.Evaluator
+import org.testattoo.core.Config
+import org.testattoo.core.Provider
 import org.testattoo.core.MetaDataProvider
 import org.testattoo.core.MetaInfo
 import org.testattoo.core.component.Button
@@ -38,6 +39,7 @@ import static org.testattoo.core.Testattoo.*
  */
 @DisplayName("State")
 class StateTest {
+    protected static Provider provider
     private static MetaDataProvider meta
     private static MetaInfo metaInfo = new MetaInfo(id: 'id', node: 'node')
 
@@ -45,13 +47,13 @@ class StateTest {
     static void before() {
         meta = mock(MetaDataProvider)
         when(meta.metaInfo(any(Component))).thenReturn(metaInfo)
-        config.evaluator = mock(Evaluator)
+        provider = mock(Provider)
     }
 
     @Test
     @DisplayName("Should support available, enabled and visible")
     void should_support_available_enabled_visible() {
-        Component cmp = spy(new Component(meta))
+        Component cmp = spy(new Component(provider, meta))
 
         doReturn(true).when(cmp).available()
         doReturn(true).when(cmp).enabled()
@@ -78,6 +80,7 @@ class StateTest {
     @DisplayName("Should support checked/unchecked")
     void should_support_checked_unchecked() {
         CheckBox checkbox = spy(CheckBox)
+        checkbox.provider = provider
         checkbox.meta = meta
 
         doReturn(true).when(checkbox).enabled()
@@ -85,19 +88,20 @@ class StateTest {
         checkbox.should { be unchecked }
 
         check checkbox
-        verify(config.evaluator, times(1)).click(any(String), any(Collection), any(Collection))
+        verify(provider, times(1)).click(any(String), any(Collection), any(Collection))
 
         doReturn(true).when(checkbox).checked()
         checkbox.should { be checked }
 
         uncheck checkbox
-        verify(config.evaluator, times(2)).click(any(String), any(Collection), any(Collection))
+        verify(provider, times(2)).click(any(String), any(Collection), any(Collection))
     }
 
     @Test
     @DisplayName("Should support required")
     void should_support_required() {
         TextField field = spy(TextField)
+        field.provider = provider
         field.meta = meta
 
         doReturn(false).when(field).required()
@@ -111,6 +115,7 @@ class StateTest {
     @DisplayName("Should support valid")
     void should_support_valid() {
         TextField field = spy(TextField)
+        field.provider = provider
         field.meta = meta
 
         doReturn(true).when(field).valid()
@@ -124,6 +129,7 @@ class StateTest {
     @DisplayName("Should support empty")
     void should_support_empty() {
         TextField field = spy(TextField)
+        field.provider = provider
         field.meta = meta
 
         doReturn(true).when(field).empty()
@@ -137,7 +143,9 @@ class StateTest {
     @DisplayName("Should support read only")
     void should_support_readOnly() {
         TextField field = spy(TextField)
+        field.provider = provider
         field.meta = meta
+
         doReturn(true).when(field).readOnly()
         field.should { be readOnly }
 
@@ -154,6 +162,7 @@ class StateTest {
     @DisplayName("Should support focused")
     void should_support_focused() {
         TextField field = spy(TextField)
+        field.provider = provider
         field.meta = meta
 
         doReturn(true).when(field).focused()
@@ -172,6 +181,7 @@ class StateTest {
     @DisplayName("Should support selected")
     void should_support_selected() {
         Item item = spy(Item)
+        item.provider = provider
         item.meta = meta
 
         doReturn(false).when(item).selected()
@@ -185,6 +195,7 @@ class StateTest {
     @DisplayName("Should support range")
     void should_support_range() {
         RangeField field = spy(RangeField)
+        field.provider = provider
         field.meta = meta
 
         doReturn(true).when(field).inRange()
@@ -197,10 +208,9 @@ class StateTest {
     @Test
     @DisplayName("Should support contain")
     void should_support_contain() {
-        Component cmp = spy(new Component(meta))
-        config.evaluator = mock(Evaluator)
+        Component cmp = spy(new Component(provider, meta))
 
-        when(config.evaluator.getJson(any(String))).thenReturn([])
+        when(provider.getJson(any(String))).thenReturn([])
         cmp.should { contain mock(Button) }
     }
 }

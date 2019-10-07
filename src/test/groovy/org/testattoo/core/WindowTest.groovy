@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,35 +15,40 @@
  */
 package org.testattoo.core
 
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.testattoo.core.component.Window
 
 import static org.mockito.Mockito.*
-import static org.testattoo.core.Testattoo.getConfig
 
 /**
  * @author David Avenante (d.avenante@gmail.com)
  */
 @DisplayName("Window")
 class WindowTest {
+    private static Provider provider
+
+    @BeforeAll
+    static void before() {
+        provider = mock(Provider)
+    }
+
     @Test
     @DisplayName("Should create a window")
     void should_create_a_window() {
-        Window window = new Window('id')
+        Window window = new Window(provider, 'id')
 
         assert window.id == 'id'
         assert window.toString() == 'id'
-
-        Evaluator evaluator = mock(Evaluator)
-        config.evaluator = evaluator
     }
 
     @Test
     @DisplayName("Should have equality and hashcode based on id")
     void equality_and_hashcode() {
-        Window window_1 = new Window('id_1')
-        Window window_2 = new Window('id_2')
-        Window window_3 = new Window('id_1')
+        Window window_1 = new Window(provider, 'id_1')
+        Window window_2 = new Window(provider, 'id_2')
+        Window window_3 = new Window(provider, 'id_1')
 
         assert window_1 != window_2
         assert window_1 == window_3
@@ -52,14 +57,13 @@ class WindowTest {
     }
 
     @Test
-    @DisplayName("Should call underline evaluator on close")
-    void should_call_underline_evaluator_on_close() {
-        Evaluator evaluator = mock(Evaluator)
-        config.evaluator = evaluator
+    @DisplayName("Should call underline provider on close")
+    void should_call_underline_provider_on_close() {
+        Provider provider = mock(Provider)
 
-        Window window = new Window('id')
-        verify(evaluator, times(0)).closeWindow(window.id)
+        Window window = new Window(provider, 'id')
+        verify(provider, times(0)).closeWindow(window.id)
         window.close()
-        verify(evaluator, times(1)).closeWindow(window.id)
+        verify(provider, times(1)).closeWindow(window.id)
     }
 }

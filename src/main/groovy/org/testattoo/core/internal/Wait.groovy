@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +18,23 @@ package org.testattoo.core.internal
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.StringDescription
+import org.testattoo.core.Config
 
-import static org.testattoo.core.Testattoo.getConfig
+import java.util.logging.Level
+import java.util.logging.Logger
 
 /**
  * @author David Avenante (d.avenante@gmail.com)
  */
 class Wait {
+    private static Logger logger = Logger.getLogger("org.testattoo.core")
+
     static void waitUntil(Closure c, Matcher what = null) {
         boolean success = false
-        long timeout = config.waitUntil.toMillis()
+        long timeout = Config.waitUntil.toMillis()
         long interval = 200
 
-        Log.log "WaitUntil: " + timeout
+        logger.log(Level.INFO, "WaitUntil: " + timeout)
         for (; timeout > 0; timeout -= interval) {
             try {
                 if (what ? what.matches(c.delegate) : c()) {
@@ -38,15 +42,15 @@ class Wait {
                     break
                 }
             } catch (e) {
-                Log.log('Matcher evaluation fail with this exception : ' + e.message)
-                Log.log('Retrying...')
+                logger.log(Level.INFO, 'Matcher evaluation fail with this exception : ' + e.message)
+                logger.log(Level.INFO, 'Retrying...')
             }
             Thread.sleep(interval)
         }
 
         if (!success) {
             Description description = new StringDescription()
-            description.appendText('Unable to reach the condition after ' + config.waitUntil.toMillis() + ' milliseconds')
+            description.appendText('Unable to reach the condition after ' + Config.waitUntil.toMillis() + ' milliseconds')
             if (what) {
                 description.appendText('\nExpected: ')
                     .appendDescriptionOf(what)

@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,6 @@ import org.testattoo.core.hamcrest.matcher.property.*
 import org.testattoo.core.hamcrest.matcher.state.*
 import org.testattoo.core.support.property.*
 import org.testattoo.core.support.state.*
-
-import static org.testattoo.core.Testattoo.getConfig
 
 /**
  * @author David Avenante (d.avenante@gmail.com)
@@ -77,7 +75,7 @@ class Matchers {
     static Matcher<ValiditySupport> invalid() { new InvalidMatcher() }
 
     static Matcher<Component> contain(Component... components) {
-        new ContainMatcher(config.evaluator, components)
+        new ContainMatcher(components)
     }
 
     static Matcher<CollapseSupport> expanded() { new ExpandedMatcher() }

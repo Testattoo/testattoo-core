@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package org.testattoo.core.input
 
 import org.testattoo.core.component.Component
+import static org.testattoo.core.Testattoo.config
 
 /**
  * @author David Avenante (d.avenante@gmail.com)
@@ -27,7 +28,7 @@ class Mouse {
 
     void rightClickOn(Component c) { c.rightClick() }
 
-    void hoveringMouseOn(Component c) { config.evaluator.mouseOver(c.id()) }
+    void hoveringMouseOn(Component c) { config.provider.mouseOver(c.id()) }
 
     DragBuilder drag(Component c) { return new DragBuilder(c) }
 }

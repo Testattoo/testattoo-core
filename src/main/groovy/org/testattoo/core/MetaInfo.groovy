@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,26 @@
  */
 package org.testattoo.core
 
+import com.google.common.reflect.ClassPath
 import groovy.transform.Immutable
 import org.testattoo.core.component.Component
+import org.testattoo.core.internal.Identifiers
 
-import static org.testattoo.core.Testattoo.$
+import static java.lang.Thread.currentThread
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @Immutable
 class MetaInfo {
+    static final Collection<Class<Component>> componentTypes = new HashSet<>()
+
     String node
     String id
+
+    static {
+        scan 'org.testattoo.bundle'
+    }
 
     @Override
     String toString() { "id=${id}, node=${node}" }
@@ -36,5 +44,13 @@ class MetaInfo {
             return $("[id=\"${id}\"]").asType(clazz)
         }
         return super.asType(clazz)
+    }
+
+    static void scan(String... packageNames) {
+        componentTypes.addAll(packageNames
+            .collect { ClassPath.from(currentThread().contextClassLoader).getTopLevelClassesRecursive(it) }
+            .flatten()
+            .collect { it.load() }
+            .findAll { Component.isAssignableFrom(it) && Identifiers.hasIdentifier(it) })
     }
 }

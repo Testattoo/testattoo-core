@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,13 @@ import org.testattoo.core.component.Component
  * @author David Avenante (d.avenante@gmail.com)
  */
 class DragBuilder {
-    Component dragged
+    private Component dragged
 
     DragBuilder(Component dragged) {
         this.dragged = dragged
     }
 
     void on(Component onto) {
-        config.evaluator.dragAndDrop(dragged.id(), onto.id())
+        dragged.provider.dragAndDrop(dragged.id(), onto.id())
     }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,8 @@ import org.hamcrest.Description
 import org.hamcrest.StringDescription
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.testattoo.core.Evaluator
+import org.testattoo.core.Config
+import org.testattoo.core.Provider
 import org.testattoo.core.MetaDataProvider
 import org.testattoo.core.MetaInfo
 import org.testattoo.core.component.Component
@@ -29,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.fail
 import static org.mockito.ArgumentMatchers.any
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.when
-import static org.testattoo.core.Testattoo.getConfig
 import static org.testattoo.core.hamcrest.Matchers.contain
 
 /**
@@ -43,12 +43,11 @@ class ContainMatcherTest {
         MetaDataProvider containerMeta = mock(MetaDataProvider)
         MetaDataProvider cmp_1Meta = mock(MetaDataProvider)
         MetaDataProvider cmp_2Meta = mock(MetaDataProvider)
-        Evaluator evaluator = mock(Evaluator)
-        config.evaluator = evaluator
+        Provider provider = mock(Provider)
 
-        Component container = new Component(containerMeta)
-        Component cmp_1 = new Component(cmp_1Meta)
-        Component cmp_2 = new Component(cmp_2Meta)
+        Component container = new Component(provider, containerMeta)
+        Component cmp_1 = new Component(provider, cmp_1Meta)
+        Component cmp_2 = new Component(provider, cmp_2Meta)
 
         when(containerMeta.metaInfo(container)).thenReturn(new MetaInfo(id: 'container', node: 'node'))
         when(cmp_1Meta.metaInfo(cmp_1)).thenReturn(new MetaInfo(id: '1', node: 'node'))
@@ -56,11 +55,11 @@ class ContainMatcherTest {
 
         List<String> result = new ArrayList<>()
 
-        when(config.evaluator.getJson(any(String))).thenReturn(result)
+        when(provider.getJson(any(String))).thenReturn(result)
         assertThat(container, contain(cmp_1, cmp_2))
 
         result.add(cmp_2.id())
-        when(config.evaluator.getJson(any(String))).thenReturn(result)
+        when(provider.getJson(any(String))).thenReturn(result)
         try {
             assertThat(container, contain(cmp_1, cmp_2))
             fail()

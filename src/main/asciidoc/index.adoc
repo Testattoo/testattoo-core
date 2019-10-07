@@ -1,0 +1,11 @@
+= Testattoo Core Documentation
+:author: David Avenante, Stephanie Parisot
+:toc: left
+:toclevels: 5
+:numbered: true
+:doctype: book
+:icons: font
+:homepage: https://www.testattoo.org
+:desc: Testattoo Core Documentation
+:imagesdir: images
+:basepath: ../..

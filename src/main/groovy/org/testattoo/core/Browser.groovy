@@ -1,5 +1,5 @@
 /**
- * Copyright © 2018 Ovea (d.avenante@gmail.com)
+ * Copyright © 2019 Testattoo (altus34@gmail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,35 +15,41 @@
  */
 package org.testattoo.core
 
-import static org.testattoo.core.Testattoo.config
+import org.testattoo.core.component.Window
 
 /**
  * @author David Avenante (d.avenante@gmail.com)
  */
 class Browser {
-    static void navigateTo(String url) { config.evaluator.to(url) }
+    private final Provider provider
 
-    static void back() { config.evaluator.back() }
+    Browser(Provider provider) {
+        this.provider = provider
+    }
 
-    static void forward() { config.evaluator.forward() }
+    void navigateTo(String url) { provider.to(url) }
 
-    static void refresh() { config.evaluator.refresh() }
+    void back() { provider.back() }
 
-    static String getTitle() { config.evaluator.title }
+    void forward() { provider.forward() }
 
-    static String getPageSource() { config.evaluator.pageSource }
+    void refresh() { provider.refresh() }
 
-    static String getUrl() { config.evaluator.url }
+    String getTitle() { provider.title }
 
-    static void open(String url) { config.evaluator.open(url) }
+    String getPageSource() { provider.pageSource }
 
-    static List<Window> getWindows() {
+    String getUrl() { provider.url }
+
+    void open(String url) { provider.open(url) }
+
+    List<Window> getWindows() {
         List<Window> windows = new ArrayList<>()
-        config.evaluator.windowIds.each { String id ->
+        provider.windowIds.each { String id ->
             windows.add(new Window(id))
         }
         return windows
     }
 
-    static void switchTo(Window window) { config.evaluator.switchToWindow(window.id) }
+    void switchTo(Window window) { provider.switchToWindow(window.id) }
 }

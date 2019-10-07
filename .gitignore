@@ -15,6 +15,7 @@
 drivers/
 
 # Maven
+.mvn/wrapper/*.jar
 log/
 pom.xml.tag
 pom.xml.releaseBackup
